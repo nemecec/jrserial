@@ -1,0 +1,28 @@
+# Lightweight Dockerfile for running tests with pre-compiled native library
+FROM eclipse-temurin:8-jdk-jammy
+
+# Install socat for virtual serial ports
+RUN apt-get update && apt-get install -y socat && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy pre-built JAR and native library
+COPY build/libs/*.jar ./lib/
+COPY src/main/resources/native/linux-x86_64/libjrserial.so ./native/
+
+# Copy test classes and dependencies
+COPY build/classes ./build/classes
+COPY build/resources ./build/resources
+
+# Copy test dependencies (from Gradle cache)
+COPY build/test-dependencies ./test-deps/
+
+# Set library path
+ENV LD_LIBRARY_PATH=/app/native
+
+# Default command runs the virtual serial port tests
+# Use shell form to allow wildcard expansion
+CMD java -cp "lib/*:test-deps/*:build/classes/java/main:build/classes/java/test" \
+    -Djava.library.path=/app/native \
+    org.junit.platform.console.ConsoleLauncher \
+    execute --select-class dev.nemecec.jrserial.VirtualSerialPortTest

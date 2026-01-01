@@ -1,0 +1,37 @@
+# Gradle
+.gradle/
+build/
+
+# Java
+*.class
+hs_err_pid*
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.classpath
+.project
+.settings/
+
+# Rust
+native/target/
+native/Cargo.lock
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code
+.claude/
+
+# Native libraries
+src/main/resources/native/
+
+# Hardware test config (contains credentials)
+hardware-test/src/test/resources/rs485-test-config.yaml
+
+# Local build configuration
+extra-target-architectures.txt

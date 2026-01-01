@@ -1,0 +1,52 @@
+# RS-485 Hardware Test Configuration
+#
+# Copy this file to rs485-test-config.yaml and update with your machine details.
+# The rs485-test-config.yaml file is gitignored for security.
+#
+# Test setup requires two machines connected via RS-485:
+# - One machine acts as SENDER
+# - One machine acts as RECEIVER
+# - Or a single machine can act as BOTH (if using a loopback adapter)
+#
+# Note: baudRate, rs485Mode, and rs485ControlPin are NOT configured here.
+# They are test parameters passed at runtime. See TestParams class.
+
+# Path to the test application JAR (built with ./gradlew :hardware-test:testAppJar)
+# The actual filename includes the version, e.g., rs485-test-app-0.1.0-SNAPSHOT-all.jar
+testJarPath: "hardware-test/build/libs"
+
+# Remote working directory for test files
+remoteWorkDir: "/tmp/rs485-test"
+
+# Test timeout in seconds
+testTimeoutSeconds: 30
+
+# Machine configurations
+machines:
+  - name: "sender-machine"
+    host: "192.168.1.100"
+    port: 22
+    username: "testuser"
+    # Use either password or privateKeyPath (not both)
+    password: "secretpassword"
+    # privateKeyPath: "/home/user/.ssh/id_rsa"
+    serialPort: "/dev/ttyS6"
+    role: SENDER
+
+  - name: "receiver-machine"
+    host: "192.168.1.101"
+    port: 22
+    username: "testuser"
+    privateKeyPath: "/home/user/.ssh/id_rsa"
+    serialPort: "/dev/ttyS6"
+    role: RECEIVER
+
+# Alternative: Single machine with loopback adapter
+# machines:
+#   - name: "loopback-machine"
+#     host: "192.168.1.100"
+#     port: 22
+#     username: "testuser"
+#     privateKeyPath: "/home/user/.ssh/id_rsa"
+#     serialPort: "/dev/ttyUSB0"
+#     role: BOTH
