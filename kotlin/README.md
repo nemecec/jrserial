@@ -8,8 +8,8 @@ Add the Kotlin module alongside the core library:
 
 ```kotlin
 dependencies {
-    implementation("dev.nemecec:jr-serial:0.1.0-SNAPSHOT")
-    implementation("dev.nemecec:jr-serial-kotlin:0.1.0-SNAPSHOT")
+    implementation("dev.nemecec.jrserial:jrserial:0.1.0-SNAPSHOT")
+    implementation("dev.nemecec.jrserial:jrserial-kotlin:0.1.0-SNAPSHOT")
 }
 ```
 

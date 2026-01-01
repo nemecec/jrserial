@@ -17,7 +17,7 @@ Basic serial port usage demonstrating:
 Run with:
 
 ```bash
-java -cp jr-serial.jar examples.SimpleExample
+java -cp jrserial.jar examples.SimpleExample
 ```
 
 ### StreamExample.java
@@ -32,7 +32,7 @@ Stream-based I/O demonstrating:
 Run with:
 
 ```bash
-java -cp jr-serial.jar examples.StreamExample
+java -cp jrserial.jar examples.StreamExample
 ```
 
 ### AdvancedExample.java
@@ -50,7 +50,7 @@ Advanced features demonstrating:
 Run with:
 
 ```bash
-java -cp jr-serial.jar examples.AdvancedExample
+java -cp jrserial.jar examples.AdvancedExample
 ```
 
 ## Requirements

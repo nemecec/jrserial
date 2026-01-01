@@ -1,4 +1,4 @@
-rootProject.name = "jr-serial"
+rootProject.name = "jrserial"
 
 include("test-app")
 include("hardware-test")

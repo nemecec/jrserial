@@ -30,7 +30,7 @@ Add the dependency to your `build.gradle`:
 
 ```groovy
 dependencies {
-  implementation 'dev.nemecec:jr-serial:0.1.0-SNAPSHOT'
+  implementation 'dev.nemecec.jrserial:jrserial:0.1.0-SNAPSHOT'
 }
 ```
 
@@ -38,8 +38,8 @@ Or for Maven in `pom.xml`:
 
 ```xml
 <dependency>
-  <groupId>dev.nemecec</groupId>
-  <artifactId>jr-serial</artifactId>
+  <groupId>dev.nemecec.jrserial</groupId>
+  <artifactId>jrserial</artifactId>
   <version>0.1.0-SNAPSHOT</version>
 </dependency>
 ```
@@ -70,14 +70,14 @@ Contains no native binaries. Use this when:
 
 **Gradle:**
 ```groovy
-implementation 'dev.nemecec:jr-serial:0.1.0-SNAPSHOT:lite'
+implementation 'dev.nemecec.jrserial:jrserial:0.1.0-SNAPSHOT:lite'
 ```
 
 **Maven:**
 ```xml
 <dependency>
-  <groupId>dev.nemecec</groupId>
-  <artifactId>jr-serial</artifactId>
+  <groupId>dev.nemecec.jrserial</groupId>
+  <artifactId>jrserial</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <classifier>lite</classifier>
 </dependency>
@@ -102,14 +102,14 @@ Available classifiers:
 
 **Gradle:**
 ```groovy
-implementation 'dev.nemecec:jr-serial:0.1.0-SNAPSHOT:linux-x86_64'
+implementation 'dev.nemecec.jrserial:jrserial:0.1.0-SNAPSHOT:linux-x86_64'
 ```
 
 **Maven:**
 ```xml
 <dependency>
-  <groupId>dev.nemecec</groupId>
-  <artifactId>jr-serial</artifactId>
+  <groupId>dev.nemecec.jrserial</groupId>
+  <artifactId>jrserial</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <classifier>linux-aarch64</classifier>
 </dependency>

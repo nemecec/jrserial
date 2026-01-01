@@ -1,0 +1,118 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  # First, run the full build to validate everything works
+  build:
+    uses: ./.github/workflows/build-reusable.yml
+    with:
+      artifact-retention-days: 1
+
+  # Then release
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 24
+
+      - name: Download native libraries (Linux)
+        uses: actions/download-artifact@v4
+        with:
+          name: native-linux-host
+          path: src/main/resources/native/
+
+      - name: Download native libraries (macOS)
+        uses: actions/download-artifact@v4
+        with:
+          name: native-macos-host
+          path: src/main/resources/native/
+
+      - name: Download native libraries (Windows)
+        uses: actions/download-artifact@v4
+        with:
+          name: native-windows-host
+          path: src/main/resources/native/
+
+      - name: List native libraries
+        run: find src/main/resources/native -type f | sort
+
+      - name: Update version in build.gradle.kts
+        run: |
+          sed -i 's/version = "[^"]*"/version = "${{ inputs.version }}"/' build.gradle.kts
+          echo "Updated version to ${{ inputs.version }}"
+          grep 'version = ' build.gradle.kts
+
+      - name: Update version in markdown files
+        run: |
+          # Update Gradle dependency format: jrserial:VERSION or jrserial:VERSION:classifier
+          # Also handles jrserial-kotlin and similar artifacts
+          find . -name "*.md" -not -path "./build/*" -exec sed -i -E \
+            's/jrserial(-kotlin)?:[0-9]+\.[0-9]+\.[0-9]+(-SNAPSHOT)?/jrserial\1:${{ inputs.version }}/g' {} \;
+
+          # Update Maven <version> tags
+          find . -name "*.md" -not -path "./build/*" -exec sed -i -E \
+            's|<version>[0-9]+\.[0-9]+\.[0-9]+(-SNAPSHOT)?</version>|<version>${{ inputs.version }}</version>|g' {} \;
+
+          echo "Updated versions in markdown files:"
+          grep -r "jrserial.*:${{ inputs.version }}" --include="*.md" . || true
+          grep -r "<version>${{ inputs.version }}</version>" --include="*.md" . || true
+
+      - name: Build all JAR variants with new version
+        run: ./gradlew clean buildAllJars -x buildRustLibrary -x copyNativeLibraries
+
+      - name: List built JARs
+        run: ls -la build/libs/
+
+      - name: Publish to Maven Central
+        run: ./gradlew publishAndReleaseToMavenCentral -x buildRustLibrary -x copyNativeLibraries
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+      - name: Commit version change
+        run: |
+          git add build.gradle.kts
+          git add "*.md" || true
+          git add **/*.md || true
+          git commit -m "Release ${{ inputs.version }}"
+
+      - name: Create and push tag
+        run: |
+          git tag "v${{ inputs.version }}"
+          git push origin main
+          git push origin "v${{ inputs.version }}"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${{ inputs.version }}" \
+            --title "v${{ inputs.version }}" \
+            --generate-notes \
+            build/libs/*.jar

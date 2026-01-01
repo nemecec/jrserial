@@ -1,0 +1,146 @@
+name: Build (Reusable)
+
+on:
+  workflow_call:
+    inputs:
+      artifact-retention-days:
+        description: 'Number of days to retain artifacts'
+        required: false
+        default: 7
+        type: number
+
+jobs:
+  # Build native libraries on Linux (Linux targets + FreeBSD)
+  build-native-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install cross
+        run: cargo install cross --git https://github.com/cross-rs/cross
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 24
+
+      - name: Build Linux host targets
+        run: ./gradlew buildLinuxHostTargets
+
+      - name: Upload native libraries
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-linux-host
+          path: src/main/resources/native/
+          retention-days: 1
+
+  # Build native libraries on macOS (macOS targets only)
+  build-native-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-apple-darwin,aarch64-apple-darwin
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 24
+
+      - name: Build macOS host targets
+        run: ./gradlew buildMacosHostTargets
+
+      - name: Upload native libraries
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-macos-host
+          path: src/main/resources/native/
+          retention-days: 1
+
+  # Build native libraries on Windows (Windows MSVC targets)
+  build-native-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc,i686-pc-windows-msvc
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 24
+
+      - name: Build Windows host targets
+        run: ./gradlew buildWindowsHostTargets
+
+      - name: Upload native libraries
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-windows-host
+          path: src/main/resources/native/
+          retention-days: 1
+
+  # Build Java and combine all native libraries into final JAR
+  build-java:
+    needs: [build-native-linux, build-native-macos, build-native-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 24
+
+      - name: Download Linux native libraries
+        uses: actions/download-artifact@v4
+        with:
+          name: native-linux-host
+          path: src/main/resources/native/
+
+      - name: Download macOS native libraries
+        uses: actions/download-artifact@v4
+        with:
+          name: native-macos-host
+          path: src/main/resources/native/
+
+      - name: Download Windows native libraries
+        uses: actions/download-artifact@v4
+        with:
+          name: native-windows-host
+          path: src/main/resources/native/
+
+      - name: List native libraries
+        run: find src/main/resources/native -type f | sort
+
+      - name: Build Java (skip native build)
+        run: ./gradlew build -x buildRustLibrary -x copyNativeLibraries
+
+      - name: Run tests
+        run: ./gradlew test
+
+      - name: Build all JAR variants
+        run: ./gradlew buildAllJars -x buildRustLibrary -x copyNativeLibraries
+
+      - name: List built JARs
+        run: ls -la build/libs/
+
+      - name: Upload all JARs
+        uses: actions/upload-artifact@v4
+        with:
+          name: jr-serial-jars
+          path: build/libs/*.jar
+          retention-days: ${{ inputs.artifact-retention-days }}

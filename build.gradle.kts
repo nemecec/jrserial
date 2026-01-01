@@ -4,6 +4,7 @@ plugins {
   java
   `java-test-fixtures`
   `maven-publish`
+  alias(libs.plugins.maven.publish)
 }
 
 java {
@@ -451,11 +452,46 @@ val buildAllJars by tasks.registering {
 // Publishing
 // =============================================================================
 
+group = "dev.nemecec.jrserial"
+version = "0.1.0-SNAPSHOT"
+
+mavenPublishing {
+  publishToMavenCentral(automaticRelease = true)
+  signAllPublications()
+
+  coordinates(group.toString(), "jrserial", version.toString())
+
+  pom {
+    name.set("JR-Serial")
+    description.set("Java serial communication library with Rust native backend")
+    url.set("https://github.com/nemecec/jrserial")
+
+    licenses {
+      license {
+        name.set("Apache License, Version 2.0")
+        url.set("https://www.apache.org/licenses/LICENSE-2.0")
+      }
+    }
+
+    developers {
+      developer {
+        id.set("nemecec")
+        name.set("Neeme Praks")
+      }
+    }
+
+    scm {
+      url.set("https://github.com/nemecec/jrserial")
+      connection.set("scm:git:git://github.com/nemecec/jrserial.git")
+      developerConnection.set("scm:git:ssh://git@github.com/nemecec/jrserial.git")
+    }
+  }
+}
+
+// Additional artifacts (lite and per-platform JARs) for publishing
 publishing {
   publications {
-    create<MavenPublication>("maven") {
-      from(components["java"])
-
+    withType<MavenPublication> {
       // Add lite JAR as additional artifact with classifier
       artifact(liteJar)
 
@@ -463,26 +499,11 @@ publishing {
       platformJarTasks.values.forEach { jarTask ->
         artifact(jarTask)
       }
-
-      pom {
-        name.set("JR-Serial")
-        description.set("Java serial communication library with Rust native backend")
-        url.set("https://github.com/nemecec/jr-serial")
-
-        licenses {
-          license {
-            name.set("Apache License, Version 2.0")
-            url.set("https://www.apache.org/licenses/LICENSE-2.0")
-          }
-        }
-
-        developers {
-          developer {
-            id.set("nemecec")
-            name.set("Neeme Praks")
-          }
-        }
-      }
     }
   }
+}
+
+// Only sign when credentials are available (for CI)
+tasks.withType<Sign>().configureEach {
+  enabled = project.findProperty("signingInMemoryKey") != null
 }

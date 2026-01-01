@@ -290,4 +290,4 @@ If you encounter issues:
 2. Verify port permissions
 3. Try a different baud rate
 4. Test with a simple terminal program first (screen, minicom)
-5. Report issues at: https://github.com/nemecec/jr-serial/issues
+5. Report issues at: https://github.com/nemecec/jrserial/issues
