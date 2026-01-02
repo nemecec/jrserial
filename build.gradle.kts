@@ -19,15 +19,12 @@ import java.io.File
 plugins {
   java
   `java-test-fixtures`
-  `maven-publish`
   alias(libs.plugins.maven.publish)
 }
 
 java {
   sourceCompatibility = JavaVersion.VERSION_1_8
   targetCompatibility = JavaVersion.VERSION_1_8
-  withSourcesJar()
-  withJavadocJar()
   toolchain {
     languageVersion.set(JavaLanguageVersion.of(24))
   }
@@ -449,10 +446,6 @@ tasks.jar {
   dependsOn(copyNativeLibraries)
 }
 
-tasks.named("sourcesJar") {
-  dependsOn(copyNativeLibraries)
-}
-
 // =============================================================================
 // JAR variants (full, lite, per-platform)
 // =============================================================================
@@ -552,4 +545,12 @@ publishing {
 // Only sign when credentials are available (for CI)
 tasks.withType<Sign>().configureEach {
   enabled = project.findProperty("signingInMemoryKey") != null
+}
+
+// Ensure proper task ordering for publishing
+// The vanniktech plugin creates plainJavadocJar which must complete before metadata generation
+afterEvaluate {
+  tasks.named("generateMetadataFileForMavenPublication") {
+    dependsOn(tasks.named("plainJavadocJar"))
+  }
 }
