@@ -106,19 +106,19 @@ jobs:
           java-version: 24
 
       - name: Download Linux native libraries
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           name: native-linux-host
           path: src/main/resources/native/
 
       - name: Download macOS native libraries
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           name: native-macos-host
           path: src/main/resources/native/
 
       - name: Download Windows native libraries
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           name: native-windows-host
           path: src/main/resources/native/
