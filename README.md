@@ -30,7 +30,7 @@ Add the dependency to your `build.gradle`:
 
 ```groovy
 dependencies {
-  implementation 'dev.nemecec.jrserial:jrserial:0.1.0'
+  implementation 'dev.nemecec.jrserial:jrserial:0.1.1'
 }
 ```
 
@@ -40,7 +40,7 @@ Or for Maven in `pom.xml`:
 <dependency>
   <groupId>dev.nemecec.jrserial</groupId>
   <artifactId>jrserial</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
 </dependency>
 ```
 
@@ -70,7 +70,7 @@ Contains no native binaries. Use this when:
 
 **Gradle:**
 ```groovy
-implementation 'dev.nemecec.jrserial:jrserial:0.1.0:lite'
+implementation 'dev.nemecec.jrserial:jrserial:0.1.1:lite'
 ```
 
 **Maven:**
@@ -78,7 +78,7 @@ implementation 'dev.nemecec.jrserial:jrserial:0.1.0:lite'
 <dependency>
   <groupId>dev.nemecec.jrserial</groupId>
   <artifactId>jrserial</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
   <classifier>lite</classifier>
 </dependency>
 ```
@@ -102,7 +102,7 @@ Available classifiers:
 
 **Gradle:**
 ```groovy
-implementation 'dev.nemecec.jrserial:jrserial:0.1.0:linux-x86_64'
+implementation 'dev.nemecec.jrserial:jrserial:0.1.1:linux-x86_64'
 ```
 
 **Maven:**
@@ -110,7 +110,7 @@ implementation 'dev.nemecec.jrserial:jrserial:0.1.0:linux-x86_64'
 <dependency>
   <groupId>dev.nemecec.jrserial</groupId>
   <artifactId>jrserial</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
   <classifier>linux-aarch64</classifier>
 </dependency>
 ```

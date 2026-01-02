@@ -499,7 +499,7 @@ val buildAllJars by tasks.registering {
 // =============================================================================
 
 group = "dev.nemecec.jrserial"
-version = "0.1.0"
+version = "0.1.1"
 
 mavenPublishing {
   publishToMavenCentral(automaticRelease = true)
