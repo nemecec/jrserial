@@ -23,7 +23,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           persist-credentials: true
           fetch-depth: 0
@@ -34,25 +34,25 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Set up Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 24
 
       - name: Download native libraries (Linux)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: native-linux-host
           path: src/main/resources/native/
 
       - name: Download native libraries (macOS)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: native-macos-host
           path: src/main/resources/native/
 
       - name: Download native libraries (Windows)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: native-windows-host
           path: src/main/resources/native/

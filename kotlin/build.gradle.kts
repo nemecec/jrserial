@@ -31,6 +31,27 @@ kotlin {
   }
 }
 
+// Tests require Java 17+ for JUnit 6
+tasks.compileTestJava {
+  options.release.set(17)
+}
+
+tasks.named<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>("compileTestKotlin") {
+  compilerOptions {
+    jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+  }
+}
+
+// Configure test configurations to resolve Java 17 compatible dependencies (for JUnit 6)
+configurations {
+  testCompileClasspath {
+    attributes { attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17) }
+  }
+  testRuntimeClasspath {
+    attributes { attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17) }
+  }
+}
+
 repositories {
   mavenCentral()
 }
