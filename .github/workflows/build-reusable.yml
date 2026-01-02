@@ -32,7 +32,7 @@ jobs:
         run: ./gradlew buildLinuxHostTargets
 
       - name: Upload native libraries
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: native-linux-host
           path: src/main/resources/native/
@@ -59,7 +59,7 @@ jobs:
         run: ./gradlew buildMacosHostTargets
 
       - name: Upload native libraries
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: native-macos-host
           path: src/main/resources/native/
@@ -86,7 +86,7 @@ jobs:
         run: ./gradlew buildWindowsHostTargets
 
       - name: Upload native libraries
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: native-windows-host
           path: src/main/resources/native/
@@ -139,7 +139,7 @@ jobs:
         run: ls -la build/libs/
 
       - name: Upload all JARs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: jr-serial-jars
           path: build/libs/*.jar
