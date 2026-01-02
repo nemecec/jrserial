@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
+pluginManagement {
+  repositories {
+    gradlePluginPortal()
+    mavenCentral()
+  }
+}
+
 rootProject.name = "jrserial"
 
 include("test-app")
