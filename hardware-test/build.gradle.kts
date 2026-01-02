@@ -26,6 +26,26 @@ java {
   }
 }
 
+// Main code targets Java 8
+tasks.compileJava {
+  options.release.set(8)
+}
+
+// Tests require Java 17+ for JUnit 6
+tasks.compileTestJava {
+  options.release.set(17)
+}
+
+// Configure test configurations to resolve Java 17 compatible dependencies (for JUnit 6)
+configurations {
+  testCompileClasspath {
+    attributes { attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17) }
+  }
+  testRuntimeClasspath {
+    attributes { attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17) }
+  }
+}
+
 repositories {
   mavenCentral()
 }
