@@ -446,6 +446,13 @@ tasks.jar {
   dependsOn(copyNativeLibraries)
 }
 
+// Exclude native binaries from sources JAR (otherwise they bloat it from ~20KB to ~1.9MB)
+afterEvaluate {
+  tasks.named<Jar>("sourcesJar") {
+    exclude("native/**")
+  }
+}
+
 // =============================================================================
 // JAR variants (full, lite, per-platform)
 // =============================================================================
