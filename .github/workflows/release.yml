@@ -116,3 +116,24 @@ jobs:
             --title "v${{ inputs.version }}" \
             --generate-notes \
             build/libs/*.jar
+
+      - name: Set next development version
+        run: |
+          # Parse version and increment micro part
+          VERSION="${{ inputs.version }}"
+          MAJOR=$(echo "$VERSION" | cut -d. -f1)
+          MINOR=$(echo "$VERSION" | cut -d. -f2)
+          MICRO=$(echo "$VERSION" | cut -d. -f3)
+          NEXT_MICRO=$((MICRO + 1))
+          NEXT_VERSION="${MAJOR}.${MINOR}.${NEXT_MICRO}-SNAPSHOT"
+
+          echo "Next development version: $NEXT_VERSION"
+
+          # Update version in build.gradle.kts
+          sed -i "s/version = \"$VERSION\"/version = \"$NEXT_VERSION\"/" build.gradle.kts
+          grep 'version = ' build.gradle.kts
+
+          # Commit and push
+          git add build.gradle.kts
+          git commit -m "Set next development version $NEXT_VERSION"
+          git push origin main
