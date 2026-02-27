@@ -1,12 +1,12 @@
 [versions]
-junit = "6.0.1"
-assertj = "3.27.6"
+junit = "6.0.3"
+assertj = "3.27.7"
 slf4j = "2.0.17"
-jsch = "2.27.7"
-jackson = "2.20.1"
-kotlin = "2.3.0"
+jsch = "2.27.8"
+jackson = "2.21.1"
+kotlin = "2.3.10"
 coroutines = "1.10.2"
-maven-publish = "0.35.0"
+maven-publish = "0.36.0"
 
 [libraries]
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
